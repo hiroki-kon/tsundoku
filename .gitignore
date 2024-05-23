@@ -1,4 +1,6 @@
 .env
+types/generated/*
+
 # Logs
 logs
 *.log

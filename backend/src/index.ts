@@ -1,13 +1,16 @@
 import express from "express";
+import cors from "cors";
+
+import { unreadBooksRouter } from "./routes/unread-books";
+import { knex } from "./config/knex";
+
 const app = express();
 const port = 3000;
+app.use(cors());
+app.use(express.json());
 
-const hogfe = 9;
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use("/unread-books", unreadBooksRouter(knex));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`listening on port ${port}`);
 });

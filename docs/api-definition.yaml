@@ -268,11 +268,6 @@ paths:
         - unread-books
       summary: 積読の合計金額(期間)
       parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
         - name: start
           in: query
           schema:
@@ -315,12 +310,6 @@ paths:
       tags:
         - unread-books
       summary: 積読の合計金額
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
       responses:
         200:
           description: 成功
@@ -347,16 +336,15 @@ paths:
         - unread-books
       summary: 積読の取得
       parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
         - name: start
           in: query
           schema:
             type: number
         - name: limit
+          in: query
+          schema:
+            type: number
+        - name: userId
           in: query
           schema:
             type: number
@@ -387,12 +375,6 @@ paths:
       tags:
         - unread-books
       summary: 積読の追加
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
@@ -435,10 +417,10 @@ paths:
         - unread-books
       summary: 積読の更新
       parameters:
-        - name: userId
+        - name: unreadBookId
           in: path
           schema:
-            type: string
+            type: number
           required: true
       requestBody:
         content:
