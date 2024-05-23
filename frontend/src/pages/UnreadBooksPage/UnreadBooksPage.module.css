@@ -1,0 +1,12 @@
+.grid {
+  width: 80%;
+}
+
+.add {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+}
