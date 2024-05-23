@@ -6,8 +6,13 @@ import { Header } from "./components/Header";
 import { SignUpPage } from "./pages/SignUpPage";
 import { SignInPage } from "./pages/SignInPage/SignInPage";
 import { UnreadBooksPage } from "./pages/UnreadBooksPage";
+import { DashBoardPages } from "./pages/DashBoardPage";
+import { useAuth } from "./hooks/useAuth";
+import { WithAuth } from "./WithAuth";
 
 function App() {
+  const { isSignIn } = useAuth();
+
   return (
     <MantineProvider>
       <Header />
@@ -15,7 +20,26 @@ function App() {
         <Route path="signup" element={<SignUpPage />} />
         <Route path="signin" element={<SignInPage />} />
 
-        <Route path="unread-books" element={<UnreadBooksPage />} />
+        <Route
+          path="unread-books"
+          element={
+            <WithAuth
+              isSignIn={isSignIn}
+              component={<UnreadBooksPage />}
+              redirectTo="signin"
+            />
+          }
+        />
+        <Route
+          path="dashboard"
+          element={
+            <WithAuth
+              isSignIn={isSignIn}
+              component={<DashBoardPages />}
+              redirectTo="/signin"
+            />
+          }
+        />
       </Routes>
     </MantineProvider>
   );
