@@ -11,11 +11,11 @@ import { useAuth } from "./hooks/useAuth";
 import { WithAuth } from "./WithAuth";
 
 function App() {
-  const { isSignIn } = useAuth();
+  const { isSignIn, userName } = useAuth();
 
   return (
     <MantineProvider>
-      <Header />
+      <Header isSignIn={isSignIn} userName={userName} />
       <Routes>
         <Route path="signup" element={<SignUpPage />} />
         <Route path="signin" element={<SignInPage />} />

@@ -17,9 +17,11 @@ passport.use(
       session: false,
     },
     async (email: string, password: string, done: any) => {
-      const findUser = await knex<{ password: string; subject: string }>(
-        "users"
-      )
+      const findUser = await knex<{
+        password: string;
+        subject: string;
+        name: string;
+      }>("users")
         .first()
         .where("email", email);
 

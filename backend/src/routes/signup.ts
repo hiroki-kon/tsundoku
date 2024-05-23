@@ -49,6 +49,7 @@ export const signupRouter = (knex: Knex) => {
       res.cookie("expireAt", new Date(Date.now() + expire).toISOString(), {
         maxAge: expire,
       });
+      res.cookie("userName", name, { maxAge: expire });
       res.json({ token });
     }
   );

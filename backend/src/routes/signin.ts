@@ -13,6 +13,11 @@ export const signinRouter = (knex: Knex) => {
     "/",
     passport.authenticate("local", { session: false }),
     async (req: Request, res: Response<SignInPostMethod["resBody"]>) => {
+      const subject = req.user;
+      const foundUser = await knex<{ subject: string; name: string }>("users")
+        .first("subject", "name")
+        .where("subject", subject);
+
       const payload = {
         sub: req.user,
       };
@@ -28,6 +33,7 @@ export const signinRouter = (knex: Knex) => {
       res.cookie("expireAt", new Date(Date.now() + expire).toISOString(), {
         maxAge: expire,
       });
+      res.cookie("userName", foundUser?.name, { maxAge: expire });
       res.json({ token });
     }
   );
