@@ -11,10 +11,18 @@ import {
 } from "@mantine/core";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { PiBooksLight } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 import classes from "./Header.module.css";
 
-export const Header = () => {
+interface Props {
+  isSignIn: boolean;
+  userName: string;
+}
+
+export const Header = ({ isSignIn, userName }: Props) => {
+  const navigate = useNavigate();
+
   const iconStyle = { width: rem(12), height: rem(12) };
 
   return (
@@ -24,31 +32,37 @@ export const Header = () => {
           積ん読!
         </Title>
 
-        <Tabs defaultValue="Dashboard">
-          <Tabs.List>
-            <Tabs.Tab
-              value="Dashboard"
-              leftSection={<MdOutlineSpaceDashboard style={iconStyle} />}
-            >
-              ダッシュボード
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="Books"
-              leftSection={<PiBooksLight style={iconStyle} />}
-            >
-              積ん読
-            </Tabs.Tab>
-          </Tabs.List>
-        </Tabs>
+        {isSignIn && (
+          <>
+            <Tabs defaultValue="Dashboard">
+              <Tabs.List>
+                <Tabs.Tab
+                  value="Dashboard"
+                  leftSection={<MdOutlineSpaceDashboard style={iconStyle} />}
+                  onClick={() => navigate("/dashboard")}
+                >
+                  ダッシュボード
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="Books"
+                  leftSection={<PiBooksLight style={iconStyle} />}
+                  onClick={() => navigate("/unread-books")}
+                >
+                  積ん読
+                </Tabs.Tab>
+              </Tabs.List>
+            </Tabs>
 
-        <UnstyledButton variant="default" className={classes.user}>
-          <Group>
-            <Avatar src={null} alt="no image here" radius="xl" size={40} />
-            <Text fw={500} size="sm" lh={1} mr={3}>
-              Hiroki Kondo
-            </Text>
-          </Group>
-        </UnstyledButton>
+            <UnstyledButton variant="default" className={classes.user}>
+              <Group>
+                <Avatar src={null} alt="no image here" radius="xl" size={40} />
+                <Text fw={500} size="sm" lh={1} mr={3}>
+                  {userName}
+                </Text>
+              </Group>
+            </UnstyledButton>
+          </>
+        )}
       </header>
       <Divider my="md" />
     </>
