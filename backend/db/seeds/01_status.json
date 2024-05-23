@@ -1,0 +1,10 @@
+[
+  {
+    "status_id": 0,
+    "status": "積読"
+  },
+  {
+    "status_id": 1,
+    "status": "読了"
+  }
+]
