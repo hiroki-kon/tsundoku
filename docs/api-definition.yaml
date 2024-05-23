@@ -1,0 +1,564 @@
+openapi: 3.0.3
+info:
+  title: Tsundoku REST API
+  version: 0.0.1
+tags:
+  - name: auth
+  - name: status
+  - name: user
+    description: ユーザー
+  - name: unread-books
+  - name: tags
+servers:
+  - url: http://localhost:3000/
+    description: 開発環境
+# security:
+#   - Bearer: []
+paths:
+  /signup:
+    post:
+      tags:
+        - "auth"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - name
+                - password
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
+                    example: "token"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /signin:
+    post:
+      tags:
+        - "auth"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
+                    example: "token"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /status:
+    get:
+      tags:
+        - "status"
+      summary: ステータス一覧取
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    statusId:
+                      type: number
+                      example: 0
+                    status:
+                      type: string
+                      example: "積読"
+
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        500:
+          description: サーバーエラー
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: ユーザー取得
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /tags:
+    get:
+      tags:
+        - tags
+      summary: タグの一覧取得
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TagItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+    post:
+      tags:
+        - tags
+      summary: タグの追加
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tagName:
+                  type: string
+              required:
+                - tagName
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /tags{tagId}:
+    put:
+      tags:
+        - tags
+      summary: タグ名の更新
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tagName:
+                  type: string
+              required:
+                - tagName
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+    delete:
+      tags:
+        - tags
+      summary: タグの削除
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: 成功
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /unread-books/amount:
+    get:
+      tags:
+        - unread-books
+      summary: 積読の合計金額(期間)
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: start
+          in: query
+          schema:
+            type: string
+            example: 2022-11
+        - name: end
+          in: query
+          schema:
+            type: string
+            example: 2022-12
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    year:
+                      type: number
+                      example: 2022
+                    month:
+                      type: number
+                      example: 11
+                    amount:
+                      type: number
+                      example: 2000
+
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /unread-books/amount/total:
+    get:
+      tags:
+        - unread-books
+      summary: 積読の合計金額
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amount:
+                    type: number
+                    example: 400000
+
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /unread-books:
+    get:
+      tags:
+        - unread-books
+      summary: 積読の取得
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: start
+          in: query
+          schema:
+            type: number
+        - name: limit
+          in: query
+          schema:
+            type: number
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/UnreadBookItem"
+                    - properties:
+                        next:
+                          type: string
+                          nullable: true
+                          example: https://xxxxxx?start=10&limit10
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+    post:
+      tags:
+        - unread-books
+      summary: 積読の追加
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bookName:
+                  type: string
+                bookPrice:
+                  type: number
+                bookAuthor:
+                  type: string
+                bookCoverUrl:
+                  type: string
+                bookStoreUrl:
+                  type: string
+                status:
+                  type: string
+              required:
+                - bookName
+                - status
+      responses:
+        201:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnreadBookItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+  /unread-books/{unreadBookId}:
+    put:
+      tags:
+        - unread-books
+      summary: 積読の更新
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bookName:
+                  type: string
+                bookPrice:
+                  type: number
+                bookAuthor:
+                  type: string
+                bookCoverUrl:
+                  type: string
+                bookStoreUrl:
+                  type: string
+                status:
+                  type: string
+              required:
+                - bookName
+                - status
+      responses:
+        201:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnreadBookItem"
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+    delete:
+      tags:
+        - "user"
+      summary: 積読の削除
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        204:
+          description: 成功
+        401:
+          description: 認証エラー
+        403:
+          description: 認可エラー
+        404:
+          description: リソース未検出エラー
+        500:
+          description: サーバーエラー
+components:
+  schemas:
+    TagItem:
+      type: object
+      properties:
+        tagId:
+          type: number
+          description: タグID
+          example: 0
+        tagName:
+          type: string
+          description: タグ
+          example: JavaScript
+    UserItem:
+      type: object
+      properties:
+        userId:
+          type: number
+          description: ユーザーID
+          example: 0
+        userName:
+          type: string
+          description: ユーザー名
+          example: SampleUser
+    UnreadBookItem:
+      type: object
+      properties:
+        bookId:
+          type: number
+          description: bookID
+          example: 0
+        bookName:
+          type: string
+          description: 本の名前
+          example: 積読の解消法
+        bookPrice:
+          type: number
+          description: 本の値段
+          example: 1200
+          nullable: true
+        bookAuthor:
+          type: string
+          description: 本の著者
+          example: 田中太郎
+          nullable: true
+        bookCoverUrl:
+          type: string
+          description: 本のカバー画像
+          example: https://xxxxxx
+          nullable: true
+        bookStoreUrl:
+          type: string
+          description: 本のUrl
+          example: https://xxxxxx
+          nullable: true
+        status:
+          type: string
+          description: 積読の状態
+          example: 積読
+          nullable: true
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: Access token for API
