@@ -1,0 +1,16 @@
+{
+  "name": "tsundoku",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "backend": "pnpm -F \"./backend/**\"",
+    "frontend": "pnpm -F \"./frontend/**\""
+  },
+  "engines": {
+    "npm": "use pnpm",
+    "pnpm": ">=7",
+    "yarn": "use pnpm"
+  }
+}
