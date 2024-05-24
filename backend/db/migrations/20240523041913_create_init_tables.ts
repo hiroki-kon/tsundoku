@@ -3,9 +3,8 @@ import type { Knex } from "knex";
 export async function up(knex: Knex): Promise<void> {
   return knex.schema
     .createTable("users", function (table) {
-      table.increments("user_id").primary();
+      table.uuid("user_id").primary();
       table.text("name");
-      table.uuid("subject").unique();
       table.text("email").unique();
       table.string("salt");
       table.string("password");
@@ -25,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
     })
     .createTable("unread_books", function (table) {
       table.increments("unread_book_id").primary();
-      table.integer("user_id");
+      table.uuid("user_id");
       table.foreign("user_id").references("users.user_id");
       table.integer("book_id");
       table.foreign("book_id").references("books.book_id");
@@ -37,7 +36,7 @@ export async function up(knex: Knex): Promise<void> {
     .createTable("tags", function (table) {
       table.increments("tag_id").primary();
       table.text("tag_name");
-      table.integer("user_id");
+      table.uuid("user_id");
       table.foreign("user_id").references("users.user_id");
     })
     .createTable("unreadBook_tags", function (table) {
@@ -49,7 +48,7 @@ export async function up(knex: Knex): Promise<void> {
     })
     .createTable("reading_plan_books", function (table) {
       table.increments("reading_plan_book_id").primary();
-      table.integer("user_id");
+      table.uuid("user_id");
       table.foreign("user_id").references("users.user_id");
       table.integer("book_id");
       table.foreign("book_id").references("books.book_id");

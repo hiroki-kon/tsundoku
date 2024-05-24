@@ -1,9 +1,8 @@
 [
   {
-    "user_id": 0,
+    "user_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
     "name": "タロー",
     "email": "sample@example.com",
-    "subject": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
     "salt": "$2b$10$PXGSNfywWeedDsq10zX8vu",
     "password": "$2b$10$PXGSNfywWeedDsq10zX8vuPXkJQ6ZjqU9HKSjGZ8XnojEwM9lFOky",
     "icon_url": null
