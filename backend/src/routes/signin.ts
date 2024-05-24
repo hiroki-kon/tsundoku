@@ -3,6 +3,7 @@ import { Knex } from "knex";
 import { Methods as SignInMethod } from "../../../types/generated/api/signin";
 import passport from "../config/passport";
 import jwt from "jsonwebtoken";
+import { UUID } from "../util";
 
 type SignInPostMethod = SignInMethod["post"];
 
@@ -14,9 +15,9 @@ export const signinRouter = (knex: Knex) => {
     passport.authenticate("local", { session: false }),
     async (req: Request, res: Response<SignInPostMethod["resBody"]>) => {
       const subject = req.user;
-      const foundUser = await knex<{ subject: string; name: string }>("users")
-        .first("subject", "name")
-        .where("subject", subject);
+      const foundUser = await knex<{ user_id: UUID; name: string }>("users")
+        .first("user_id", "name")
+        .where("user_id", subject);
 
       const payload = {
         sub: req.user,

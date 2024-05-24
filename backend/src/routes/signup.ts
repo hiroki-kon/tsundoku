@@ -3,6 +3,7 @@ import { Knex } from "knex";
 import { hash, genSalt } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Methods as SignUpMethod } from "../../../types/generated/api/signup";
+import { UUID } from "../util";
 
 type SignUpPostMethod = SignUpMethod["post"];
 
@@ -18,16 +19,22 @@ export const signupRouter = (knex: Knex) => {
       const { email, password, name } = req.body;
       const salt = await genSalt(10);
       const hashedPassword = await hash(password, salt);
+
+      // NOTE: 確認のためにselectは微妙かも
+      const foundUser = await knex<{ user_id: UUID }>("users")
+        .select()
+        .where("email", email);
+      console.log({ foundUser });
+
       const createdUser = await knex<{
-        user_id: number;
-        subject: string;
+        user_id: UUID;
         email: string;
         name: string;
         salt: string;
         password: string;
       }>("users").insert(
         {
-          subject: crypto.randomUUID(),
+          user_id: crypto.randomUUID(),
           email,
           name,
           salt,
@@ -36,7 +43,7 @@ export const signupRouter = (knex: Knex) => {
         "*"
       );
       const payload = {
-        sub: createdUser[0],
+        sub: createdUser[0].user_id,
       };
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: "24m",
