@@ -296,6 +296,12 @@ paths:
                   totalAmount:
                     type: number
                     example: 24444
+                  startPeriod:
+                    type: string
+                    example: 2020/04
+                  endPeriod:
+                    type: string
+                    example: 2024/05
 
         401:
           description: 認証エラー
