@@ -1,8 +1,15 @@
 import { Router, Request, Response } from "express";
 import { Knex } from "knex";
 import { Methods as UnreadBooksMethod } from "../../../types/generated/api/unread-books";
-
-type UnreadBooksGetMethod = UnreadBooksMethod["get"];
+import { getDateTImeWithTImezone } from "../util";
+interface Book {
+  book_id?: number;
+  name: string;
+  price?: number;
+  author?: string;
+  book_cover_url?: string;
+  store_url?: string;
+}
 
 export const unreadBooksRouter = (knex: Knex) => {
   const router = Router({ mergeParams: true });
@@ -10,10 +17,18 @@ export const unreadBooksRouter = (knex: Knex) => {
   router.get(
     "/",
     async (
-      req: Request<unknown, unknown, unknown,UnreadBooksGetMethod["query"]>,
-      res: Response<UnreadBooksGetMethod["resBody"]>
+      req: Request<
+        unknown,
+        unknown,
+        unknown,
+        UnreadBooksMethod["get"]["query"]
+      >,
+      res: Response<UnreadBooksMethod["get"]["resBody"]>
     ) => {
-      const userId = req.query?.userId     ;
+      const userSub = req.signInUserSub;
+      if (userSub === undefined) {
+        res.status(401).send();
+      }
 
       const result = await knex
         .select(
@@ -29,7 +44,7 @@ export const unreadBooksRouter = (knex: Knex) => {
         .join("users", "unread_books.user_id", "=", "users.user_id")
         .join("books", "unread_books.book_id", "=", "books.book_id")
         .join("status", "unread_books.status_id", "=", "status.status_id")
-        .where("users.user_id", userId);
+        .where("users.user_id", userSub);
       res.send(
         result.map((elem) => ({
           bookId: elem.book_id,
@@ -41,6 +56,80 @@ export const unreadBooksRouter = (knex: Knex) => {
           status: elem.status,
         }))
       );
+    }
+  );
+
+  router.post(
+    "/",
+    async (
+      req: Request<
+        unknown,
+        unknown,
+        UnreadBooksMethod["post"]["reqBody"],
+        unknown
+      >,
+      res: Response<UnreadBooksMethod["post"]["resBody"]>
+    ) => {
+      const {
+        bookName,
+        bookPrice,
+        bookAuthor,
+        bookCoverUrl,
+        bookStoreUrl,
+        status,
+      } = req.body;
+
+      // TODO:副問い合わせを使えばシンプルにできそう
+
+      const userSub = req.signInUserSub;
+      if (userSub === undefined) {
+        res.status(401).send();
+      }
+
+      const foundStatus = await knex<{ status_id: number; status: string }>(
+        "status"
+      )
+        .first()
+        .where("status", status);
+      if (foundStatus === undefined) {
+        res.status(500);
+      }
+
+      const foundBook = await knex<{ book_id: number }>("books")
+        .first()
+        .where("name", bookName);
+
+      const insertBook = async (book: Book): Promise<Book[]> => {
+        return await knex("books").returning("*").insert({
+          name: bookName,
+          price: bookPrice,
+          author: bookAuthor,
+          book_cover_url: bookCoverUrl,
+          store_url: bookStoreUrl,
+        });
+      };
+
+      const bookId =
+        foundBook === undefined
+          ? (
+              await insertBook({
+                name: bookName,
+                price: bookPrice,
+                author: bookAuthor,
+                book_cover_url: bookCoverUrl,
+                store_url: bookStoreUrl,
+              })
+            )[0].book_id
+          : foundBook.book_id;
+
+      await knex("unread_books").insert({
+        user_id: userSub,
+        book_id: bookId,
+        created_at: getDateTImeWithTImezone(),
+        status_id: foundStatus?.status_id,
+      });
+
+      res.status(201).send()  ;
     }
   );
 
