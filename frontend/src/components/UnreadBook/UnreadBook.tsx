@@ -12,7 +12,7 @@ interface Props {
 export const UnreadBook = (props: Props) => {
   const { bookCoverUrl, bookTitle, tags, price, piledUpAt } = props;
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder w={280} mih={350}>
+    <Card shadow="sm" padding="lg" radius="md" withBorder w={280} h={400}>
       <Card.Section>
         <Image
           src={bookCoverUrl}
