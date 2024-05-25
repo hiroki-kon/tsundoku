@@ -64,7 +64,7 @@ export const Header = ({ isSignIn, userName }: Props) => {
           </>
         )}
       </header>
-      <Divider my="md" />
+      <Divider />
     </>
   );
 };

@@ -19,7 +19,6 @@ import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { GiEarrings } from "react-icons/gi";
 
 const fetcher: Fetcher<UnreadBookMethod["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);

@@ -7,7 +7,7 @@ interface Props {
 
 export const StatsCard = ({ title, text }: Props) => {
   return (
-    <Card shadow="sm" padding="lg" radius="md" w={250}>
+    <Card shadow="sm" padding="lg" radius="md" >
       <Flex>
         <Text c="dimmed">{title}</Text>
       </Flex>
