@@ -12,7 +12,7 @@ export const SignInPage = () => {
   return (
     <>
       <Title order={2} ta="center" pb={10}>
-        ログイン
+        サインイン
       </Title>
       <SignIn
         onSubmit={(values) => {

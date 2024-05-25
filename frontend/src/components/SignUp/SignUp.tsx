@@ -1,4 +1,4 @@
-import { TextInput, Checkbox, Button, Group, Box } from "@mantine/core";
+import { TextInput, Button, Box, Anchor } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import classes from "./SignUp.module.css";
 
@@ -51,6 +51,10 @@ export const SignUp = ({ onSubmit }: Props) => {
         />
 
         <Button type="submit">サインアップ</Button>
+
+        <Anchor href="/signin" underline="always">
+          サインイン
+        </Anchor>
       </form>
     </Box>
   );
