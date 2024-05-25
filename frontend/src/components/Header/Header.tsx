@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { PiBooksLight } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import classes from "./Header.module.css";
 
@@ -22,6 +22,7 @@ interface Props {
 
 export const Header = ({ isSignIn, userName }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const iconStyle = { width: rem(12), height: rem(12) };
 
@@ -34,7 +35,11 @@ export const Header = ({ isSignIn, userName }: Props) => {
 
         {isSignIn && (
           <>
-            <Tabs defaultValue="Dashboard">
+            <Tabs
+              defaultValue={
+                location.pathname === "/unread-books" ? "Books" : "Dashboard"
+              }
+            >
               <Tabs.List>
                 <Tabs.Tab
                   value="Dashboard"
