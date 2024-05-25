@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
 import useSWR, { Fetcher } from "swr";
-import { Loader, Grid, ActionIcon, Modal } from "@mantine/core";
+import {
+  Loader,
+  SimpleGrid,
+  ActionIcon,
+  Modal,
+  useMantineTheme,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { FaPlus } from "react-icons/fa6";
 import { UnreadBookPostForm } from "../../components/UnreadBookPostForm";
@@ -29,7 +35,10 @@ export const UnreadBooksPage = () => {
     fetcher
   );
 
+  console.log(data);
+
   const navigate = useNavigate();
+  const theme = useMantineTheme();
 
   useEffect(() => {
     if (error) {
@@ -60,25 +69,29 @@ export const UnreadBooksPage = () => {
           }}
         />
       </Modal>
-      <Grid className={classes.grid} mx="auto">
+      <SimpleGrid
+        className={classes.grid}
+        mx="auto"
+        bg={theme.colors.gray[2]}
+        cols={4}
+      >
         {isLoading ? (
           <Loader color="blue" />
         ) : (
           <>
             {" "}
             {data?.map((elem, i) => (
-              <Grid.Col key={i} span={3}>
-                <UnreadBook
-                  bookCoverUrl={elem.bookCoverUrl}
-                  bookTitle={elem.bookName}
-                  price={elem.bookPrice}
-                  piledUpAt={elem.piledUpAt}
-                ></UnreadBook>
-              </Grid.Col>
+              <UnreadBook
+                key={i}
+                bookCoverUrl={elem.bookCoverUrl}
+                bookTitle={elem.bookName}
+                price={elem.bookPrice}
+                piledUpAt={elem.piledUpAt}
+              ></UnreadBook>
             ))}
           </>
         )}
-      </Grid>
+      </SimpleGrid>
       <ActionIcon
         className={classes.add}
         variant="filled"
