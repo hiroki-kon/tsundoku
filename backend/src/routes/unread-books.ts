@@ -38,7 +38,8 @@ export const unreadBooksRouter = (knex: Knex) => {
           "books.author",
           "books.book_cover_url",
           "books.store_url",
-          "status"
+          "status",
+          "unread_books.piled_up_at"
         )
         .from("unread_books")
         .join("users", "unread_books.user_id", "=", "users.user_id")
@@ -54,6 +55,7 @@ export const unreadBooksRouter = (knex: Knex) => {
           bookCoverUrl: elem.book_cover_url,
           bookStoreUrl: elem.store_url,
           status: elem.status,
+          piledUpAt: elem.piled_up_at,
         }))
       );
     }
@@ -77,6 +79,7 @@ export const unreadBooksRouter = (knex: Knex) => {
         bookCoverUrl,
         bookStoreUrl,
         status,
+        piledUpAt,
       } = req.body;
 
       // TODO:副問い合わせを使えばシンプルにできそう
@@ -127,9 +130,10 @@ export const unreadBooksRouter = (knex: Knex) => {
         book_id: bookId,
         created_at: getDateTImeWithTImezone(),
         status_id: foundStatus?.status_id,
+        piled_up_at: piledUpAt,
       });
 
-      res.status(201).send()  ;
+      res.status(201).send();
     }
   );
 

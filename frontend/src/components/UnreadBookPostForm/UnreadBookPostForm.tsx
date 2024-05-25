@@ -11,15 +11,21 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import useSWR, { Fetcher } from "swr";
 import { MdCurrencyYen } from "react-icons/md";
+import { DateInput } from "@mantine/dates";
 import { Methods as StatusMethod } from "../../../../types/generated/api/status";
+import { Dayjs } from "dayjs";
+import "dayjs/locale/ja";
+
+interface FormValues {
+  title: string;
+  coverUrl: string;
+  status: string;
+  price: number;
+  piledUpAt: Date | null;
+}
 
 interface Props {
-  onSubmit: (values: {
-    title: string;
-    coverUrl: string;
-    status: string;
-    price: number;
-  }) => void;
+  onSubmit: (values: FormValues) => void;
 }
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
@@ -29,18 +35,20 @@ const fetcher: Fetcher<StatusMethod["get"]["resBody"], string> = (url) =>
 export const UnreadBookPostForm = ({ onSubmit }: Props) => {
   const { data } = useSWR(`${apiEndpoint}/status`, fetcher);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     mode: "uncontrolled",
     initialValues: {
       title: "",
       coverUrl: "",
       status: "",
       price: NaN,
+      piledUpAt: null,
     },
 
     validate: {
       title: (value) => (value.trim().length < 1 ? "入力してください" : null),
       price: (value) => (Number.isNaN(value) ? "入力してください" : null),
+      piledUpAt: (value) => (value === null ? "入力してください" : null),
     },
   });
 
@@ -71,6 +79,16 @@ export const UnreadBookPostForm = ({ onSubmit }: Props) => {
           key={form.key("price")}
           {...form.getInputProps("price")}
           mt="md"
+        />
+
+        <DateInput
+          withAsterisk
+          label="積み始めた日"
+          locale="ja"
+          key={form.key("piledUpAt")}
+          {...form.getInputProps("piledUpAt")}
+          mt="md"
+          valueFormat="YYYY年 MM月 DD日"
         />
 
         <Select
