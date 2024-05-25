@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Knex } from "knex";
 import { Methods as UnreadBooksMethod } from "../../../types/generated/api/unread-books";
+import { Methods as UnreadBookAmountMethod } from "../../../types/generated/api/unread-books/amount";
 import { getDateTImeWithTImezone } from "../util";
 interface Book {
   book_id?: number;
@@ -13,6 +14,40 @@ interface Book {
 
 export const unreadBooksRouter = (knex: Knex) => {
   const router = Router({ mergeParams: true });
+
+  router.get(
+    "/amount",
+    async (
+      req: Request,
+      res: Response<UnreadBookAmountMethod["get"]["resBody"]>
+    ) => {
+      const userSub = req.signInUserSub;
+      if (userSub === undefined) {
+        res.status(401).send();
+      }
+
+      const result = await knex("unread_books")
+        .column(
+          knex.raw(
+            "to_char(piled_up_at, 'YYYY/MM') as date, sum(price) as amount"
+          )
+        )
+        .select<{ date: `${string}/${string}`; amount: string }[]>()
+        .join("books", "books.book_id", "unread_books.book_id")
+        .where("unread_books.user_id", userSub)
+        .groupBy("date");
+
+      console.log(result);
+      res.send({
+        data: result.map((elem) => ({
+          year: Number(elem.date.split("/")[0]),
+          month: Number(elem.date.split("/")[1]),
+          amount: Number(elem.amount),
+        })),
+        totalAmount: result.reduce((acc, crr) => acc + Number(crr.amount), 0),
+      });
+    }
+  );
 
   router.get(
     "/",
