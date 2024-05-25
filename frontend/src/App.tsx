@@ -26,7 +26,7 @@ function App() {
             <WithAuth
               isSignIn={isSignIn}
               component={<UnreadBooksPage />}
-              redirectTo="signin"
+              redirectTo="/signin"
             />
           }
         />

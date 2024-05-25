@@ -8,10 +8,7 @@ interface Response {
 }
 
 export const useAuth = (): Response => {
-  const [cookies, setCookie, removeCookie] = useCookies([
-    "expireAt",
-    "userName",
-  ]);
+  const [cookies] = useCookies(["expireAt", "userName", "token"]);
 
   const isSignIn =
     cookies.expireAt !== undefined &&
