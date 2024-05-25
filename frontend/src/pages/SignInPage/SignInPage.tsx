@@ -1,4 +1,4 @@
-import { Box, Title } from "@mantine/core";
+import { Title } from "@mantine/core";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 

@@ -11,6 +11,9 @@ import { UnreadBook } from "../../components/UnreadBook";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { GiEarrings } from "react-icons/gi";
 
 const fetcher: Fetcher<UnreadBookMethod["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
@@ -26,7 +29,15 @@ export const UnreadBooksPage = () => {
     fetcher
   );
 
-  console.log(data);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error) {
+      if (error.response.status === 401) {
+        navigate("/signin");
+      }
+    }
+  }, [error, navigate]);
 
   const [opened, { open, close }] = useDisclosure(false);
 
