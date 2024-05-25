@@ -3,6 +3,8 @@ import { Knex } from "knex";
 import { Methods as UnreadBooksMethod } from "../../../types/generated/api/unread-books";
 import { Methods as UnreadBookAmountMethod } from "../../../types/generated/api/unread-books/amount";
 import { getDateTImeWithTImezone } from "../util";
+import dayjs from "dayjs";
+
 interface Book {
   book_id?: number;
   name: string;
@@ -32,10 +34,11 @@ export const unreadBooksRouter = (knex: Knex) => {
             "to_char(piled_up_at, 'YYYY/MM') as date, sum(price) as amount"
           )
         )
-        .select<{ date: `${string}/${string}`; amount: string }[]>()
+        .select<{ date: string; amount: string }[]>()
         .join("books", "books.book_id", "unread_books.book_id")
         .where("unread_books.user_id", userSub)
-        .groupBy("date");
+        .groupBy("date")
+        .orderBy("date");
 
       console.log(result);
       res.send({
@@ -45,6 +48,8 @@ export const unreadBooksRouter = (knex: Knex) => {
           amount: Number(elem.amount),
         })),
         totalAmount: result.reduce((acc, crr) => acc + Number(crr.amount), 0),
+        startPeriod: result[0].date,
+        endPeriod: result[result.length - 1].date,
       });
     }
   );
