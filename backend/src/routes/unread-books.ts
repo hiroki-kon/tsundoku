@@ -32,7 +32,7 @@ export const unreadBooksRouter = (knex: Knex) => {
 
       const result = await knex
         .select(
-          "books.book_id",
+          "unread_books.unread_book_id",
           "books.name",
           "books.price",
           "books.author",
@@ -48,7 +48,7 @@ export const unreadBooksRouter = (knex: Knex) => {
         .where("users.user_id", userSub);
       res.send(
         result.map((elem) => ({
-          bookId: elem.book_id,
+          unreadBookId: elem.unread_book_id,
           bookName: elem.name,
           bookPrice: elem.price,
           bookAuthor: elem.author,

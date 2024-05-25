@@ -271,49 +271,6 @@ paths:
     get:
       tags:
         - unread-books
-      summary: 積読の合計金額(期間)
-      parameters:
-        - name: start
-          in: query
-          schema:
-            type: string
-            example: 2022-11
-        - name: end
-          in: query
-          schema:
-            type: string
-            example: 2022-12
-      responses:
-        200:
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  properties:
-                    year:
-                      type: number
-                      example: 2022
-                    month:
-                      type: number
-                      example: 11
-                    amount:
-                      type: number
-                      example: 2000
-
-        401:
-          description: 認証エラー
-        403:
-          description: 認可エラー
-        404:
-          description: リソース未検出エラー
-        500:
-          description: サーバーエラー
-  /unread-books/amount/total:
-    get:
-      tags:
-        - unread-books
       summary: 積読の合計金額
       responses:
         200:
@@ -323,9 +280,22 @@ paths:
               schema:
                 type: object
                 properties:
-                  amount:
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        year:
+                          type: number
+                          example: 2022
+                        month:
+                          type: number
+                          example: 11
+                        amount:
+                          type: number
+                          example: 2000
+                  totalAmount:
                     type: number
-                    example: 400000
+                    example: 24444
 
         401:
           description: 認証エラー
@@ -513,7 +483,7 @@ components:
     UnreadBookItem:
       type: object
       properties:
-        bookId:
+        unreadBookId:
           type: number
           description: bookID
           example: 0
