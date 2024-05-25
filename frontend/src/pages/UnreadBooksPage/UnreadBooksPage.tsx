@@ -4,22 +4,19 @@ import useSWR, { Fetcher } from "swr";
 import { Loader, Grid, ActionIcon, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { FaPlus } from "react-icons/fa6";
-import { UnreadBookPostForm } from "../../components/UnreadBookPostForm/UnreadBookPostForm";
+import { UnreadBookPostForm } from "../../components/UnreadBookPostForm";
 import { Methods as UnreadBookMethod } from "../../../../types/generated/api/unread-books";
 import classes from "./UnreadBooksPage.module.css";
-
-type UnreadBook = UnreadBookMethod["get"]["resBody"];
-
 import { UnreadBook } from "../../components/UnreadBook";
 
-const fetcher: Fetcher<UnreadBook, string> = (url) =>
+const fetcher: Fetcher<UnreadBookMethod["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const UnreadBooksPage = () => {
   const { data, error, isLoading, mutate } = useSWR(
-    `${apiEndpoint}/unread-books?userId=0`,
+    `${apiEndpoint}/unread-books`,
     fetcher
   );
 
@@ -29,7 +26,19 @@ export const UnreadBooksPage = () => {
     <>
       {" "}
       <Modal opened={opened} onClose={close} title="積ん読の登録">
-        hoge
+        <UnreadBookPostForm
+          onSubmit={async (values) => {
+            const addOBj = {
+              bookName: values.title,
+              bookCoverUrl: values.coverUrl,
+              status: values.status,
+              bookPrice: values.price
+            };
+            await axios.post(`${apiEndpoint}/unread-books`, addOBj);
+            mutate(data !== undefined ? [...data, addOBj] : [addOBj]);
+            close();
+          }}
+        />
       </Modal>
       <Grid className={classes.grid} mx="auto">
         {isLoading ? (
