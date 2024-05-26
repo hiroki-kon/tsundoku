@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { Knex } from "knex";
 import { Methods as UnreadBooksMethod } from "../../../types/generated/api/unread-books";
 import { Methods as UnreadBookAmountMethod } from "../../../types/generated/api/unread-books/amount";
+import { Methods as UnreadBookIdMethods } from "../../../types/generated/api/unread-books/_unreadBookId@number";
 import { getDateTImeWithTImezone } from "../util";
 import dayjs from "dayjs";
 
@@ -174,6 +175,25 @@ export const unreadBooksRouter = (knex: Knex) => {
       });
 
       res.status(201).send();
+    }
+  );
+
+  router.delete(
+    "/:unreadBookId",
+    async (req: Request<{ unreadBookId: number }>, res: Response) => {
+      const userSub = req.signInUserSub;
+      if (userSub === undefined) {
+        res.status(401).send();
+      }
+      console.log(req.params.unreadBookId);
+      const unreadBookId = req.params.unreadBookId;
+
+      await knex("unread_books")
+        .where("user_id", userSub)
+        .andWhere("unread_book_id", unreadBookId)
+        .del();
+
+      res.status(204).send();
     }
   );
 

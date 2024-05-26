@@ -443,7 +443,7 @@ paths:
           description: サーバーエラー
     delete:
       tags:
-        - "user"
+        - unread-books
       summary: 積読の削除
       parameters:
         - name: userId
