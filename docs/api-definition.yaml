@@ -284,12 +284,9 @@ paths:
                     type: array
                     items:
                       properties:
-                        year:
-                          type: number
-                          example: 2022
-                        month:
-                          type: number
-                          example: 11
+                        date:
+                          type: string
+                          example: 2024/05
                         amount:
                           type: number
                           example: 2000

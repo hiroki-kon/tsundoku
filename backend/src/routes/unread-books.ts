@@ -44,8 +44,7 @@ export const unreadBooksRouter = (knex: Knex) => {
       console.log(result);
       res.send({
         data: result.map((elem) => ({
-          year: Number(elem.date.split("/")[0]),
-          month: Number(elem.date.split("/")[1]),
+          date: elem.date,
           amount: Number(elem.amount),
         })),
         totalAmount: result.reduce((acc, crr) => acc + Number(crr.amount), 0),
