@@ -41,7 +41,6 @@ export const unreadBooksRouter = (knex: Knex) => {
         .groupBy("date")
         .orderBy("date");
 
-      console.log(result);
       res.send({
         data: result.map((elem) => ({
           date: elem.date,
@@ -209,8 +208,6 @@ export const unreadBooksRouter = (knex: Knex) => {
       if (userSub === undefined) {
         res.status(401).send();
       }
-
-      console.log(req.body.unreadBookId);
 
       await knex("unread_books")
         .update({

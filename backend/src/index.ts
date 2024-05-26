@@ -7,6 +7,7 @@ import { unreadBooksRouter } from "./routes/unread-books";
 import { knex } from "./config/knex";
 import passport, { authCheck } from "./config/passport";
 import { statusRouter } from "./routes/status";
+import { tagsRouter } from "./routes/tags";
 
 const app = express();
 const port = 3000;
@@ -23,8 +24,9 @@ app.use(cookieParser());
 app.use("/signup", signupRouter(knex));
 app.use("/signin", signinRouter(knex));
 
-app.use("/status",authCheck, statusRouter(knex))
+app.use("/status", authCheck, statusRouter(knex));
 app.use("/unread-books", authCheck, unreadBooksRouter(knex));
+app.use("/tags", authCheck, tagsRouter(knex));
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`);

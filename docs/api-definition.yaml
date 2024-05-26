@@ -152,12 +152,6 @@ paths:
       tags:
         - tags
       summary: タグの一覧取得
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
       responses:
         200:
           description: 成功
@@ -179,12 +173,6 @@ paths:
       tags:
         - tags
       summary: タグの追加
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
@@ -215,12 +203,6 @@ paths:
       tags:
         - tags
       summary: タグ名の更新
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
@@ -250,12 +232,6 @@ paths:
       tags:
         - tags
       summary: タグの削除
-      parameters:
-        - name: userId
-          in: path
-          schema:
-            type: string
-          required: true
       responses:
         204:
           description: 成功
