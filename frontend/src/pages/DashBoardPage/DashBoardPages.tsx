@@ -46,8 +46,6 @@ export const DashBoardPages = () => {
     }
   }, [amountError, navigate]);
 
-  console.log({ amount });
-
   return (
     <Grid
       className={classes.container}

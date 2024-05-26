@@ -34,6 +34,9 @@ const fetcher: Fetcher<StatusMethod["get"]["resBody"], string> = (url) =>
 
 export const UnreadBookPostForm = ({ onSubmit }: Props) => {
   const { data } = useSWR(`${apiEndpoint}/status`, fetcher);
+  const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, fetcher);
+
+  console.log(tagsData);
 
   const form = useForm<FormValues>({
     mode: "uncontrolled",

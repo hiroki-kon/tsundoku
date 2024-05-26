@@ -37,8 +37,6 @@ export const UnreadBooksPage = () => {
 
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
-  console.log(data);
-  console.log(isEditable);
 
   const navigate = useNavigate();
   const theme = useMantineTheme();
@@ -106,7 +104,6 @@ export const UnreadBooksPage = () => {
                   );
                 }}
                 onClickFinishReadingButton={async () => {
-                  console.log({ elem });
                   await axios.put(
                     `${apiEndpoint}/unread-books/${elem.unreadBookId}/status`,
                     { ...elem, status: "読了" }

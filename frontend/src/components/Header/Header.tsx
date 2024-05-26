@@ -8,19 +8,26 @@ import {
   Text,
   Group,
   UnstyledButton,
+  Menu,
+  Modal,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { PiBooksLight } from "react-icons/pi";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import classes from "./Header.module.css";
+import { TagsForm } from "../TagsForm";
 
 interface Props {
   isSignIn: boolean;
   userName: string;
+  onClickSignOut: () => void;
 }
 
-export const Header = ({ isSignIn, userName }: Props) => {
+export const Header = ({ isSignIn, userName, onClickSignOut }: Props) => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,6 +35,10 @@ export const Header = ({ isSignIn, userName }: Props) => {
 
   return (
     <>
+      {" "}
+      <Modal opened={opened} onClose={close} title="タグの編集">
+        <TagsForm />
+      </Modal>
       <header className={classes.header}>
         <Title className={classes.title} order={2}>
           積ん読!
@@ -58,14 +69,29 @@ export const Header = ({ isSignIn, userName }: Props) => {
               </Tabs.List>
             </Tabs>
 
-            <UnstyledButton variant="default" className={classes.user}>
-              <Group>
-                <Avatar src={null} alt="no image here" radius="xl" size={40} />
-                <Text fw={500} size="sm" lh={1} mr={3}>
-                  {userName}
-                </Text>
-              </Group>
-            </UnstyledButton>
+            <Menu>
+              <Menu.Target>
+                <UnstyledButton variant="default" className={classes.user}>
+                  <Group>
+                    <Avatar
+                      src={null}
+                      alt="no image here"
+                      radius="xl"
+                      size={40}
+                    />
+                    <Text fw={500} size="sm" lh={1} mr={3}>
+                      {userName}
+                    </Text>
+                  </Group>
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item onClick={open}>タグの設定</Menu.Item>
+                <Menu.Item color="red" onClick={() => onClickSignOut()}>
+                  サインアウト
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </>
         )}
       </header>

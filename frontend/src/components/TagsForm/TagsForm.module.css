@@ -1,0 +1,5 @@
+.deletableTag {
+  &:hover {
+    cursor: pointer;
+  }
+}

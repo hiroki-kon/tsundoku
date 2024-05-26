@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
-import '@mantine/dates/styles.css'
-import '@mantine/charts/styles.css'
+import "@mantine/dates/styles.css";
+import "@mantine/charts/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { Routes, Route } from "react-router-dom";
 
@@ -17,7 +17,11 @@ function App() {
 
   return (
     <MantineProvider>
-      <Header isSignIn={isSignIn} userName={userName} />
+      <Header
+        isSignIn={isSignIn}
+        userName={userName}
+        onClickSignOut={() => console.log("サインアウト")}
+      />
       <Routes>
         <Route path="signup" element={<SignUpPage />} />
         <Route path="signin" element={<SignInPage />} />
