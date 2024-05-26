@@ -10,14 +10,13 @@ import {
   Box,
   Card,
   Center,
-  Flex,
+  Text,
   Grid,
   useMantineTheme,
 } from "@mantine/core";
 import { AreaChart } from "@mantine/charts";
 import classes from ".//DashBoardPages.module.css";
 import { StatsCard } from "../../components/StatsCard";
-import { data } from "./data";
 
 import dayjs from "dayjs";
 
@@ -47,8 +46,7 @@ export const DashBoardPages = () => {
     }
   }, [amountError, navigate]);
 
-  console.log(amount);
-  console.log(data);
+  console.log({ amount });
 
   return (
     <Grid
@@ -95,33 +93,34 @@ export const DashBoardPages = () => {
           title="積んでる期間の平均"
           text={`${
             data
-              ? data!.reduce(
-                  (acc, crr) =>
-                    crr?.status === "積読"
-                      ? dayjs(dayjs()).diff(crr.piledUpAt, "day") + acc
-                      : acc,
-                  0
-                ) / data?.filter((item) => item.status === "積読").length
+              ? Math.round(
+                  data!.reduce(
+                    (acc, crr) =>
+                      crr?.status === "積読"
+                        ? dayjs(dayjs()).diff(crr.piledUpAt, "day") + acc
+                        : acc,
+                    0
+                  ) / data?.filter((item) => item.status === "積読").length
+                )
               : undefined
-          }`}
+          } 日`}
         />
       </Grid.Col>
 
-      {/* <Grid.Col span={7}>
+      <Grid.Col span={7}>
         <Card shadow="sm" padding="lg" radius="md">
+          <Text c="dimmed" mb={"md"}>
+            月別 購入金額
+          </Text>
           <AreaChart
             h={300}
-            data={data}
+            data={amount?.data as Record<string, unknown>[]}
             dataKey="date"
-            series={[
-              { name: "Apples", color: "indigo.6" },
-              { name: "Oranges", color: "blue.6" },
-              { name: "Tomatoes", color: "teal.6" },
-            ]}
+            series={[{ name: "amount", color: "indigo.6" }]}
             curveType="natural"
           />
         </Card>
-      </Grid.Col> */}
+      </Grid.Col>
 
       <Grid.Col span={4}>
         <Card />
