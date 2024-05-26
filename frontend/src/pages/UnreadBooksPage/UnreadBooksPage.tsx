@@ -7,9 +7,10 @@ import {
   ActionIcon,
   Modal,
   useMantineTheme,
+  Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaRegEdit, FaCheck } from "react-icons/fa";
 import { UnreadBookPostForm } from "../../components/UnreadBookPostForm";
 import { Methods as UnreadBookMethod } from "../../../../types/generated/api/unread-books";
 import classes from "./UnreadBooksPage.module.css";
@@ -18,7 +19,7 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const fetcher: Fetcher<UnreadBookMethod["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
@@ -34,7 +35,10 @@ export const UnreadBooksPage = () => {
     fetcher
   );
 
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+
   console.log(data);
+  console.log(isEditable);
 
   const navigate = useNavigate();
   const theme = useMantineTheme();
@@ -86,21 +90,53 @@ export const UnreadBooksPage = () => {
                 bookTitle={elem.bookName}
                 price={elem.bookPrice}
                 piledUpAt={elem.piledUpAt}
+                isEditable={isEditable}
+                onClickDeleteButton={async () => {
+                  console.log(elem.unreadBookId);
+                  await axios.delete(
+                    `${apiEndpoint}/unread-books/${elem.unreadBookId}`
+                  );
+
+                  mutate(
+                    data?.filter(
+                      (item) => item.unreadBookId !== elem.unreadBookId
+                    ),
+                    false
+                  );
+                }}
               ></UnreadBook>
             ))}
           </>
         )}
       </SimpleGrid>
-      <ActionIcon
-        className={classes.add}
-        variant="filled"
-        size="xl"
-        radius="xl"
-        aria-label="Settings"
-        onClick={open}
-      >
-        <FaPlus style={{ width: "30%", height: "30%" }} />
-      </ActionIcon>
+      <Stack className={classes.editButtons}>
+        <ActionIcon
+          className={classes.edit}
+          variant="default"
+          size="xl"
+          radius="xl"
+          aria-label="Settings"
+          onClick={() => setIsEditable((preState) => !preState)}
+        >
+          {isEditable === false ? (
+            <FaRegEdit style={{ width: "30%", height: "30%" }} />
+          ) : (
+            <FaCheck style={{ width: "30%", height: "30%" }} />
+          )}
+        </ActionIcon>
+        {isEditable === false && (
+          <ActionIcon
+            className={classes.add}
+            variant="filled"
+            size="xl"
+            radius="xl"
+            aria-label="Settings"
+            onClick={open}
+          >
+            <FaPlus style={{ width: "30%", height: "30%" }} />
+          </ActionIcon>
+        )}
+      </Stack>
     </>
   );
 };

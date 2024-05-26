@@ -8,7 +8,18 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  position: fixed;
+}
+
+.edit {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+
+}
+
+.editButtons {
   bottom: 5%;
   right: 5%;
+  position: fixed;
+
 }

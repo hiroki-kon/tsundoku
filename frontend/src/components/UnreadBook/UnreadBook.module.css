@@ -1,4 +1,10 @@
-.bookCover {
-  object-fit: contain;
-  height: 20px;
+.deleteButton {
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  z-index: 999;
+}
+
+.container {
+  position: relative;
 }
