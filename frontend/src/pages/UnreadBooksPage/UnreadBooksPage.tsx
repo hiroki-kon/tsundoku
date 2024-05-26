@@ -89,10 +89,11 @@ export const UnreadBooksPage = () => {
                 bookCoverUrl={elem.bookCoverUrl}
                 bookTitle={elem.bookName}
                 price={elem.bookPrice}
+                status={elem.status}
                 piledUpAt={elem.piledUpAt}
                 isEditable={isEditable}
+                isUnread={elem.status === "積読"}
                 onClickDeleteButton={async () => {
-                  console.log(elem.unreadBookId);
                   await axios.delete(
                     `${apiEndpoint}/unread-books/${elem.unreadBookId}`
                   );
@@ -104,7 +105,22 @@ export const UnreadBooksPage = () => {
                     false
                   );
                 }}
-              ></UnreadBook>
+                onClickFinishReadingButton={async () => {
+                  console.log({ elem });
+                  await axios.put(
+                    `${apiEndpoint}/unread-books/${elem.unreadBookId}/status`,
+                    { ...elem, status: "読了" }
+                  );
+
+                  mutate(
+                    data?.map((item) =>
+                      item.unreadBookId === elem.unreadBookId
+                        ? { ...item, status: "読了" }
+                        : item
+                    )
+                  );
+                }}
+              />
             ))}
           </>
         )}

@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { Knex } from "knex";
 import { Methods as UnreadBooksMethod } from "../../../types/generated/api/unread-books";
 import { Methods as UnreadBookAmountMethod } from "../../../types/generated/api/unread-books/amount";
-import { Methods as UnreadBookIdMethods } from "../../../types/generated/api/unread-books/_unreadBookId@number";
+import { Methods as UnreadBookIdMethods } from "../../../types/generated/api/unread-books/_unreadBookId@number/status";
 import { getDateTImeWithTImezone } from "../util";
 import dayjs from "dayjs";
 
@@ -185,7 +185,6 @@ export const unreadBooksRouter = (knex: Knex) => {
       if (userSub === undefined) {
         res.status(401).send();
       }
-      console.log(req.params.unreadBookId);
       const unreadBookId = req.params.unreadBookId;
 
       await knex("unread_books")
@@ -194,6 +193,35 @@ export const unreadBooksRouter = (knex: Knex) => {
         .del();
 
       res.status(204).send();
+    }
+  );
+
+  router.put(
+    "/:unreadBookId/status",
+    async (
+      req: Request<
+        { unreadBookId: number },
+        unknown,
+        UnreadBookIdMethods["put"]["reqBody"]
+      >,
+      res: Response
+    ) => {
+      const userSub = req.signInUserSub;
+      if (userSub === undefined) {
+        res.status(401).send();
+      }
+
+      console.log(req.body.unreadBookId);
+
+      await knex("unread_books")
+        .update({
+          status_id: knex("status")
+            .select("status_id")
+            .where("status", req.body.status),
+        })
+        .where("unread_book_id", req.body.unreadBookId);
+
+      res.status(201).send();
     }
   );
 

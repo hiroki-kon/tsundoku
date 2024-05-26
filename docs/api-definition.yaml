@@ -394,7 +394,7 @@ paths:
           description: リソース未検出エラー
         500:
           description: サーバーエラー
-  /unread-books/{unreadBookId}:
+  /unread-books/{unreadBookId}/status:
     put:
       tags:
         - unread-books
@@ -411,6 +411,8 @@ paths:
             schema:
               type: object
               properties:
+                unreadBookId:
+                  type: number
                 bookName:
                   type: string
                 bookPrice:
@@ -422,6 +424,8 @@ paths:
                 bookStoreUrl:
                   type: string
                 status:
+                  type: string
+                piledUpAt:
                   type: string
               required:
                 - bookName
