@@ -29,7 +29,7 @@ function App() {
         <Route path="signin" element={<SignInPage />} />
 
         <Route
-          path="unread-books"
+          path="unread"
           element={
             <WithAuth
               isSignIn={isSignIn}

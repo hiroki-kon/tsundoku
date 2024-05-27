@@ -48,7 +48,7 @@ export const Header = ({ isSignIn, userName, onClickSignOut }: Props) => {
           <>
             <Tabs
               defaultValue={
-                location.pathname === "/unread-books" ? "Books" : "Dashboard"
+                location.pathname === "/unread" ? "Books" : "Dashboard"
               }
             >
               <Tabs.List>
@@ -62,7 +62,7 @@ export const Header = ({ isSignIn, userName, onClickSignOut }: Props) => {
                 <Tabs.Tab
                   value="Books"
                   leftSection={<PiBooksLight style={iconStyle} />}
-                  onClick={() => navigate("/unread-books")}
+                  onClick={() => navigate("/unread")}
                 >
                   積ん読
                 </Tabs.Tab>
