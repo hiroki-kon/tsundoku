@@ -11,6 +11,7 @@ import classes from ".//DashBoardPages.module.css";
 import { StatsCard } from "../../components/StatsCard";
 
 import dayjs from "dayjs";
+axios.defaults.withCredentials = true;
 
 const amountFetcher: Fetcher<Methods["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
