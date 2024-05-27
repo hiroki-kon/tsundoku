@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 
@@ -12,7 +11,7 @@ interface Response {
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const useAuth = (): Response => {
-  const [cookies, setCookie, removeCookie] = useCookies([
+  const [cookies] = useCookies([
     "expireAt",
     "userName",
     "token",

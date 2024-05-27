@@ -3,19 +3,9 @@ import axios from "axios";
 import useSWR, { Fetcher } from "swr";
 import { Methods } from "../../../../types/generated/api/unread-books/amount";
 import { Methods as UnreadBookMethods } from "../../../../types/generated/api/unread-books";
-import { Methods as TagsMethod } from "../../../../types/generated/api/tags";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import {
-  Badge,
-  Box,
-  Card,
-  Center,
-  Text,
-  Grid,
-  useMantineTheme,
-  Table,
-} from "@mantine/core";
+import { Card, Text, Grid, useMantineTheme, Table } from "@mantine/core";
 import { AreaChart, PieChart } from "@mantine/charts";
 import classes from ".//DashBoardPages.module.css";
 import { StatsCard } from "../../components/StatsCard";
@@ -28,9 +18,6 @@ const amountFetcher: Fetcher<Methods["get"]["resBody"], string> = (url) =>
 const fetcher: Fetcher<UnreadBookMethods["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
 
-const tagsFetcher: Fetcher<TagsMethod["get"]["resBody"], string> = (url) =>
-  axios.get(url).then((res) => res.data);
-
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 export const DashBoardPages = () => {
   const { data: amount, error: amountError } = useSWR(
@@ -39,8 +26,6 @@ export const DashBoardPages = () => {
   );
 
   const { data } = useSWR(`${apiEndpoint}/unread-books`, fetcher);
-
-  const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, tagsFetcher);
 
   const generatePieChartData = (
     sourceData: UnreadBookMethods["get"]["resBody"] | undefined
@@ -60,7 +45,7 @@ export const DashBoardPages = () => {
 
     console.log(totalling);
     const test = Object.entries(totalling)
-      .map(([key, value], i) => ({
+      .map(([key, value]) => ({
         name: key,
         value: value,
       }))

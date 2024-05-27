@@ -16,7 +16,6 @@ import { DateInput } from "@mantine/dates";
 import { Methods as StatusMethod } from "../../../../types/generated/api/status";
 import { Methods as TagsMethod } from "../../../../types/generated/api/tags";
 
-import { Dayjs } from "dayjs";
 import "dayjs/locale/ja";
 
 interface FormValues {
