@@ -31,9 +31,9 @@ describe("Test Status Endpoint", () => {
       request.get("/status").end((err, res) => {
         chai.expect(err).to.be.null;
         chai.expect(res.body).to.deep.equal([
-            { statusId: 1, status: "積読" },
-            { statusId: 2, status: "読了" },
-          ]);
+          { statusId: 1, status: "積読" },
+          { statusId: 2, status: "読了" },
+        ]);
         done();
       });
     });

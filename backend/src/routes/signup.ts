@@ -25,6 +25,11 @@ export const signupRouter = (knex: Knex) => {
         .select()
         .where("email", email);
 
+      if (foundUser.length !== 0) {
+        res.status(409).send();
+        return;
+      }
+
       const createdUser = await knex<{
         user_id: UUID;
         email: string;
