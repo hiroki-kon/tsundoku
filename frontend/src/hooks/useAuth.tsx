@@ -11,15 +11,15 @@ interface Response {
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const useAuth = (): Response => {
-  const [cookies] = useCookies([
-    "expireAt",
-    "userName",
-    "token",
-  ]);
+  const [cookies] = useCookies(["expireAt", "userName", "token"]);
+
+  console.log({ cookies });
 
   const isSignIn =
     cookies.expireAt !== undefined &&
     new Date(cookies.expireAt) > new Date(Date.now());
+
+  console.log(isSignIn);
 
   const signOut = async () => {
     await axios.post(`${apiEndpoint}/signout`);
