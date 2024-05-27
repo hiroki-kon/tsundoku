@@ -3,6 +3,7 @@ import axios from "axios";
 import useSWR, { Fetcher } from "swr";
 import { Methods } from "../../../../types/generated/api/unread-books/amount";
 import { Methods as UnreadBookMethods } from "../../../../types/generated/api/unread-books";
+import { Methods as TagsMethod } from "../../../../types/generated/api/tags";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -13,8 +14,9 @@ import {
   Text,
   Grid,
   useMantineTheme,
+  Table,
 } from "@mantine/core";
-import { AreaChart } from "@mantine/charts";
+import { AreaChart, PieChart } from "@mantine/charts";
 import classes from ".//DashBoardPages.module.css";
 import { StatsCard } from "../../components/StatsCard";
 
@@ -26,6 +28,9 @@ const amountFetcher: Fetcher<Methods["get"]["resBody"], string> = (url) =>
 const fetcher: Fetcher<UnreadBookMethods["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
 
+const tagsFetcher: Fetcher<TagsMethod["get"]["resBody"], string> = (url) =>
+  axios.get(url).then((res) => res.data);
+
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 export const DashBoardPages = () => {
   const { data: amount, error: amountError } = useSWR(
@@ -34,6 +39,38 @@ export const DashBoardPages = () => {
   );
 
   const { data } = useSWR(`${apiEndpoint}/unread-books`, fetcher);
+
+  const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, tagsFetcher);
+
+  const generatePieChartData = (
+    sourceData: UnreadBookMethods["get"]["resBody"] | undefined
+  ): { name: string; value: number; color: string }[] => {
+    if (sourceData === undefined) {
+      return [];
+    }
+    const tags = sourceData?.flatMap((item) => item.tags) as string[];
+
+    type InitialObj = { [k: string]: number };
+    const totalling = tags?.reduce((acc, crr) => {
+      acc[crr] = (acc[crr] || 0) + 1;
+      return acc;
+    }, {} as InitialObj);
+
+    const colors = ["teal", "yellow", "pink", "violet", "red"];
+
+    console.log(totalling);
+    const test = Object.entries(totalling)
+      .map(([key, value], i) => ({
+        name: key,
+        value: value,
+      }))
+      .sort((a, b) => (a.value > b.value ? -1 : 1))
+      .map((item, i) => ({ ...item, color: colors[i] }));
+
+    console.log(test);
+    return test;
+  };
+  generatePieChartData(data);
 
   const navigate = useNavigate();
   const theme = useMantineTheme();
@@ -121,7 +158,33 @@ export const DashBoardPages = () => {
       </Grid.Col>
 
       <Grid.Col span={4}>
-        <Card />
+        <Card>
+          <Text c="dimmed" mb={"md"}>
+            タグ別
+          </Text>
+          <PieChart data={generatePieChartData(data)} withTooltip mx="auto" />
+          <Text c="dimmed" mb={"xs"}>
+            上位2種類
+          </Text>
+          <Table p={10}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>タグ名</Table.Th>
+                <Table.Th>数 (冊)</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {generatePieChartData(data)
+                .slice(0, 2)
+                .map((item) => (
+                  <Table.Tr key={item.name}>
+                    <Table.Td>{item.name}</Table.Td>
+                    <Table.Td>{item.value}</Table.Td>
+                  </Table.Tr>
+                ))}
+            </Table.Tbody>
+          </Table>
+        </Card>
       </Grid.Col>
     </Grid>
   );

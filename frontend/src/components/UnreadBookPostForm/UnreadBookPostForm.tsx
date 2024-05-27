@@ -43,7 +43,6 @@ export const UnreadBookPostForm = ({ onSubmit }: Props) => {
   const { data } = useSWR(`${apiEndpoint}/status`, fetcher);
   const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, tagsFetcher);
 
-  console.log(tagsData);
 
   const form = useForm<FormValues>({
     mode: "uncontrolled",
