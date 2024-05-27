@@ -40,7 +40,6 @@ export const UnreadBooksPage = () => {
   );
 
   const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, tagsFetcher);
-  console.log(tagsData);
   const [isEditable, setIsEditable] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -62,7 +61,6 @@ export const UnreadBooksPage = () => {
       <Modal opened={opened} onClose={close} title="積ん読の登録">
         <UnreadBookPostForm
           onSubmit={async (values) => {
-            console.log(values);
             const addOBj = {
               bookName: values.title,
               bookCoverUrl: values.coverUrl,

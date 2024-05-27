@@ -48,6 +48,17 @@ function App() {
             />
           }
         />
+
+        <Route
+          path="/"
+          element={
+            <WithAuth
+              isSignIn={isSignIn}
+              component={<DashBoardPages />}
+              redirectTo="/signin"
+            />
+          }
+        />
       </Routes>
     </MantineProvider>
   );

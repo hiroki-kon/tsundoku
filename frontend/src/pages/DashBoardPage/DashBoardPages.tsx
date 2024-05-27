@@ -44,7 +44,6 @@ export const DashBoardPages = () => {
 
     const colors = ["teal", "yellow", "pink", "violet", "red"];
 
-    console.log(totalling);
     const test = Object.entries(totalling)
       .map(([key, value]) => ({
         name: key,
@@ -53,7 +52,6 @@ export const DashBoardPages = () => {
       .sort((a, b) => (a.value > b.value ? -1 : 1))
       .map((item, i) => ({ ...item, color: colors[i] }));
 
-    console.log(test);
     return test;
   };
   generatePieChartData(data);

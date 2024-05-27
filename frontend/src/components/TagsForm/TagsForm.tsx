@@ -20,7 +20,6 @@ const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const TagsForm = () => {
   const { data, mutate } = useSWR(`${apiEndpoint}/tags`, fetcher);
-  console.log(data);
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -60,7 +59,6 @@ export const TagsForm = () => {
           const result = await axios.post(`${apiEndpoint}/tags`, {
             tagName: values.tag,
           });
-          console.log(result.data);
 
           mutate(data ? [...data, result.data] : [result.data]);
         })}

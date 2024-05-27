@@ -7,9 +7,17 @@ export const statusRouter = (knex: Knex) => {
 
   router.get(
     "/",
-    async (req: Request<never>, res: Response<StatusMethod["get"]["resBody"]>) => {
+    async (
+      req: Request<never>,
+      res: Response<StatusMethod["get"]["resBody"]>
+    ) => {
       const result = await knex.select().from("status");
-      res.send(result);
+      res.send(
+        result.map((item) => ({
+          statusId: item.status_id,
+          status: item.status,
+        }))
+      );
     }
   );
 
