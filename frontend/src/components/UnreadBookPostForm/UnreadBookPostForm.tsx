@@ -6,6 +6,7 @@ import {
   Box,
   Select,
   NumberInput,
+  MultiSelect,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import axios from "axios";
@@ -13,6 +14,8 @@ import useSWR, { Fetcher } from "swr";
 import { MdCurrencyYen } from "react-icons/md";
 import { DateInput } from "@mantine/dates";
 import { Methods as StatusMethod } from "../../../../types/generated/api/status";
+import { Methods as TagsMethod } from "../../../../types/generated/api/tags";
+
 import { Dayjs } from "dayjs";
 import "dayjs/locale/ja";
 
@@ -22,6 +25,7 @@ interface FormValues {
   status: string;
   price: number;
   piledUpAt: Date | null;
+  tags: string[];
 }
 
 interface Props {
@@ -32,9 +36,12 @@ const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const fetcher: Fetcher<StatusMethod["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
 
+const tagsFetcher: Fetcher<TagsMethod["get"]["resBody"], string> = (url) =>
+  axios.get(url).then((res) => res.data);
+
 export const UnreadBookPostForm = ({ onSubmit }: Props) => {
   const { data } = useSWR(`${apiEndpoint}/status`, fetcher);
-  const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, fetcher);
+  const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, tagsFetcher);
 
   console.log(tagsData);
 
@@ -46,12 +53,14 @@ export const UnreadBookPostForm = ({ onSubmit }: Props) => {
       status: "",
       price: NaN,
       piledUpAt: null,
+      tags: [],
     },
 
     validate: {
       title: (value) => (value.trim().length < 1 ? "入力してください" : null),
       price: (value) => (Number.isNaN(value) ? "入力してください" : null),
       piledUpAt: (value) => (value === null ? "入力してください" : null),
+      tags: (value) => (value.length > 3 ? "4個以上選択できません" : null),
     },
   });
 
@@ -81,6 +90,20 @@ export const UnreadBookPostForm = ({ onSubmit }: Props) => {
           placeholder="本の定価"
           key={form.key("price")}
           {...form.getInputProps("price")}
+          mt="md"
+        />
+
+        <MultiSelect
+          label="タグ"
+          placeholder="タグ"
+          data={
+            tagsData?.map((tag) => ({
+              value: tag.tagId?.toString(),
+              label: tag.tagName,
+            })) as { value: string; label: string }[]
+          }
+          key={form.key("tags")}
+          {...form.getInputProps("tags")}
           mt="md"
         />
 

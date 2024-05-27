@@ -13,6 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { FaPlus, FaRegEdit, FaCheck } from "react-icons/fa";
 import { UnreadBookPostForm } from "../../components/UnreadBookPostForm";
 import { Methods as UnreadBookMethod } from "../../../../types/generated/api/unread-books";
+import { Methods as TagsMethod } from "../../../../types/generated/api/tags";
 import classes from "./UnreadBooksPage.module.css";
 import { UnreadBook } from "../../components/UnreadBook";
 import dayjs from "dayjs";
@@ -22,6 +23,9 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const fetcher: Fetcher<UnreadBookMethod["get"]["resBody"], string> = (url) =>
+  axios.get(url).then((res) => res.data);
+
+const tagsFetcher: Fetcher<TagsMethod["get"]["resBody"], string> = (url) =>
   axios.get(url).then((res) => res.data);
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
@@ -35,8 +39,9 @@ export const UnreadBooksPage = () => {
     fetcher
   );
 
+  const { data: tagsData } = useSWR(`${apiEndpoint}/tags`, tagsFetcher);
+  console.log(tagsData);
   const [isEditable, setIsEditable] = useState<boolean>(false);
-
 
   const navigate = useNavigate();
   const theme = useMantineTheme();
@@ -57,15 +62,29 @@ export const UnreadBooksPage = () => {
       <Modal opened={opened} onClose={close} title="積ん読の登録">
         <UnreadBookPostForm
           onSubmit={async (values) => {
+            console.log(values);
             const addOBj = {
               bookName: values.title,
               bookCoverUrl: values.coverUrl,
               status: values.status,
               bookPrice: values.price,
               piledUpAt: dayjs(values.piledUpAt).tz("Asia/Tokyo").toISOString(),
+              tagIds: values.tags,
+            };
+
+            const displayObj = {
+              ...addOBj,
+              tags: values.tags.map(
+                (tagId) =>
+                  tagsData?.find((tag) => tag.tagId == Number(tagId))
+                    ?.tagName as string
+              ),
             };
             await axios.post(`${apiEndpoint}/unread-books`, addOBj);
-            mutate(data !== undefined ? [addOBj, ...data] : [addOBj], false);
+            mutate(
+              data !== undefined ? [displayObj, ...data] : [displayObj],
+              false
+            );
             close();
           }}
         />
@@ -91,6 +110,7 @@ export const UnreadBooksPage = () => {
                 piledUpAt={elem.piledUpAt}
                 isEditable={isEditable}
                 isUnread={elem.status === "積読"}
+                tags={elem.tags}
                 onClickDeleteButton={async () => {
                   await axios.delete(
                     `${apiEndpoint}/unread-books/${elem.unreadBookId}`

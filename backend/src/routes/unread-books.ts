@@ -71,6 +71,23 @@ export const unreadBooksRouter = (knex: Knex) => {
 
       const result = await knex
         .select(
+          knex.raw(
+            "unread_books.unread_book_id,books.name,author,books.price,book_cover_url,store_url,status,piled_up_at,array_to_string(array_agg(tag_name),',') as tagIds"
+          )
+        )
+        .from("unread_books")
+        .join("users", "unread_books.user_id", "=", "users.user_id")
+        .join("books", "unread_books.book_id", "=", "books.book_id")
+        .join("status", "unread_books.status_id", "=", "status.status_id")
+        .leftOuterJoin(
+          "unreadBook_tags",
+          "unread_books.unread_book_id",
+          "=",
+          "unreadBook_tags.unread_book_id"
+        )
+        .leftOuterJoin("tags", "unreadBook_tags.tag_id", "=", "tags.tag_id")
+        .where("users.user_id", userSub)
+        .groupBy(
           "unread_books.unread_book_id",
           "books.name",
           "books.price",
@@ -80,11 +97,8 @@ export const unreadBooksRouter = (knex: Knex) => {
           "status",
           "unread_books.piled_up_at"
         )
-        .from("unread_books")
-        .join("users", "unread_books.user_id", "=", "users.user_id")
-        .join("books", "unread_books.book_id", "=", "books.book_id")
-        .join("status", "unread_books.status_id", "=", "status.status_id")
-        .where("users.user_id", userSub);
+        .orderBy("created_at", "desc");
+
       res.send(
         result.map((elem) => ({
           unreadBookId: elem.unread_book_id,
@@ -95,6 +109,7 @@ export const unreadBooksRouter = (knex: Knex) => {
           bookStoreUrl: elem.store_url,
           status: elem.status,
           piledUpAt: elem.piled_up_at,
+          tags: elem.tagids === "" ? [] : elem.tagids.split(","),
         }))
       );
     }
@@ -119,9 +134,11 @@ export const unreadBooksRouter = (knex: Knex) => {
         bookStoreUrl,
         status,
         piledUpAt,
+        tagIds,
       } = req.body;
 
       // TODO:副問い合わせを使えばシンプルにできそう
+      // TODO:トランザクション処理にする
 
       const userSub = req.signInUserSub;
       if (userSub === undefined) {
@@ -164,13 +181,22 @@ export const unreadBooksRouter = (knex: Knex) => {
             )[0].book_id
           : foundBook.book_id;
 
-      await knex("unread_books").insert({
-        user_id: userSub,
-        book_id: bookId,
-        created_at: getDateTImeWithTImezone(),
-        status_id: foundStatus?.status_id,
-        piled_up_at: piledUpAt,
-      });
+      const unreadBookIDs = await knex("unread_books")
+        .insert({
+          user_id: userSub,
+          book_id: bookId,
+          created_at: getDateTImeWithTImezone(),
+          status_id: foundStatus?.status_id,
+          piled_up_at: piledUpAt,
+        })
+        .returning<{ unread_book_id: number }[]>("unread_book_id");
+
+      await knex("unreadBook_tags").insert(
+        tagIds?.map((tag) => ({
+          unread_book_id: unreadBookIDs[0].unread_book_id,
+          tag_id: tag,
+        }))
+      );
 
       res.status(201).send();
     }
@@ -184,6 +210,8 @@ export const unreadBooksRouter = (knex: Knex) => {
         res.status(401).send();
       }
       const unreadBookId = req.params.unreadBookId;
+
+      await knex("unreadBook_tags").where("unread_book_id", unreadBookId).del();
 
       await knex("unread_books")
         .where("user_id", userSub)

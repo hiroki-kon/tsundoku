@@ -349,6 +349,10 @@ paths:
                   type: string
                 piledUpAt:
                   type: string
+                tagIds:
+                  type: array
+                  items:
+                    type: number
               required:
                 - bookName
                 - status
@@ -502,6 +506,11 @@ components:
           type: string
           description: 積み始めた日
           example: 2024-05-13T15:00:00.000Z
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["DB", "AWS"]
   securitySchemes:
     cookieAuth: # arbitrary name for the security scheme; will be used in the "security" key later
       type: apiKey
