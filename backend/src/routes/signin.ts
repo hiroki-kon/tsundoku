@@ -22,6 +22,8 @@ export const signinRouter = (knex: Knex) => {
       const payload = {
         sub: req.user,
       };
+
+      console.log(process.env.JWT_SECRET);
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: "24h",
       });
