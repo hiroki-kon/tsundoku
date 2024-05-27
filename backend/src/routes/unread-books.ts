@@ -4,7 +4,6 @@ import { Methods as UnreadBooksMethod } from "../../../types/generated/api/unrea
 import { Methods as UnreadBookAmountMethod } from "../../../types/generated/api/unread-books/amount";
 import { Methods as UnreadBookIdMethods } from "../../../types/generated/api/unread-books/_unreadBookId@number/status";
 import { getDateTImeWithTImezone } from "../util";
-import dayjs from "dayjs";
 
 interface Book {
   book_id?: number;
@@ -40,6 +39,11 @@ export const unreadBooksRouter = (knex: Knex) => {
         .where("unread_books.user_id", userSub)
         .groupBy("date")
         .orderBy("date");
+
+      if (result.length === 0) {
+        res.status(404).send();
+        return;
+      }
 
       res.send({
         data: result.map((elem) => ({

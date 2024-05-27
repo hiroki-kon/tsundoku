@@ -23,7 +23,6 @@ export const signinRouter = (knex: Knex) => {
         sub: req.user,
       };
 
-      console.log(process.env.JWT_SECRET);
       const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: "24h",
       });
@@ -33,17 +32,17 @@ export const signinRouter = (knex: Knex) => {
         httpOnly: true,
         maxAge: expire,
         sameSite: "none",
-        secure: true 
+        secure: true,
       });
       res.cookie("expireAt", new Date(Date.now() + expire).toISOString(), {
         maxAge: expire,
         sameSite: "none",
-        secure: true 
+        secure: true,
       });
       res.cookie("userName", foundUser?.name, {
         maxAge: expire,
         sameSite: "none",
-        secure: true 
+        secure: true,
       });
       res.json({ token });
     }
