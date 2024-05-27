@@ -20,6 +20,7 @@
     "cookie-parse": "^0.4.0",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.11",
+    "husky": "^9.0.11",
     "openapi2aspida": "^0.23.2",
     "react": "^18.2.0",
     "react-cookie": "^7.1.4",
