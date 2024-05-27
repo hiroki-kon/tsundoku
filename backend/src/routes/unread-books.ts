@@ -154,6 +154,8 @@ export const unreadBooksRouter = (knex: Knex) => {
       )
         .first()
         .where("status", status);
+
+      console.log(foundStatus);
       if (foundStatus === undefined) {
         res.status(500);
       }
@@ -195,12 +197,14 @@ export const unreadBooksRouter = (knex: Knex) => {
         })
         .returning<{ unread_book_id: number }[]>("unread_book_id");
 
-      await knex("unreadBook_tags").insert(
-        tagIds?.map((tag) => ({
-          unread_book_id: unreadBookIDs[0].unread_book_id,
-          tag_id: tag,
-        }))
-      );
+      if (tagIds?.length !== 0) {
+        await knex("unreadBook_tags").insert(
+          tagIds?.map((tag) => ({
+            unread_book_id: unreadBookIDs[0].unread_book_id,
+            tag_id: tag,
+          }))
+        );
+      }
 
       res.status(201).send();
     }
