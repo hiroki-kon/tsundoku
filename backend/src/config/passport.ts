@@ -62,6 +62,7 @@ export const authCheck = (
 ) => {
   try {
     const { token } = request.cookies;
+    console.log(token);
 
     if (!token) throw new Error();
 

@@ -32,11 +32,16 @@ export const signinRouter = (knex: Knex) => {
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: expire,
+        sameSite: "none",
       });
       res.cookie("expireAt", new Date(Date.now() + expire).toISOString(), {
         maxAge: expire,
+        sameSite: "none",
       });
-      res.cookie("userName", foundUser?.name, { maxAge: expire });
+      res.cookie("userName", foundUser?.name, {
+        maxAge: expire,
+        sameSite: "none",
+      });
       res.json({ token });
     }
   );
