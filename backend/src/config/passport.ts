@@ -65,6 +65,8 @@ export const authCheck = (
 
     if (!token) throw new Error();
 
+    console.log("auth: ", process.env.JWT_SECRET);
+    console.log("verify: ", verify(token, process.env.JWT_SECRET as string));
     const { sub } = verify(token, process.env.JWT_SECRET as string);
 
     if (typeof sub === "string" && isUuidType(sub)) {
