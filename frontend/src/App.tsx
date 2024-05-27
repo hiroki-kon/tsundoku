@@ -13,14 +13,16 @@ import { useAuth } from "./hooks/useAuth";
 import { WithAuth } from "./WithAuth";
 
 function App() {
-  const { isSignIn, userName } = useAuth();
+  const { isSignIn, userName, signOut } = useAuth();
 
   return (
     <MantineProvider>
       <Header
         isSignIn={isSignIn}
         userName={userName}
-        onClickSignOut={() => console.log("サインアウト")}
+        onClickSignOut={() => {
+          signOut();
+        }}
       />
       <Routes>
         <Route path="signup" element={<SignUpPage />} />

@@ -8,6 +8,7 @@ import { knex } from "./config/knex";
 import passport, { authCheck } from "./config/passport";
 import { statusRouter } from "./routes/status";
 import { tagsRouter } from "./routes/tags";
+import { signoutRouter } from "./routes/signout";
 
 const app = express();
 const port = 3000;
@@ -21,6 +22,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/signout", signoutRouter());
 app.use("/signup", signupRouter(knex));
 app.use("/signin", signinRouter(knex));
 
