@@ -9,6 +9,7 @@ import passport, { authCheck } from "./config/passport";
 import { statusRouter } from "./routes/status";
 import { tagsRouter } from "./routes/tags";
 import { signoutRouter } from "./routes/signout";
+import path from "path";
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, "../../frontend", "dist")));
+
 app.use("/signout", signoutRouter());
 app.use("/signup", signupRouter(knex));
 app.use("/signin", signinRouter(knex));
@@ -29,6 +32,10 @@ app.use("/signin", signinRouter(knex));
 app.use("/status", authCheck, statusRouter(knex));
 app.use("/unread-books", authCheck, unreadBooksRouter(knex));
 app.use("/tags", authCheck, tagsRouter(knex));
+
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"));
+});
 
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
