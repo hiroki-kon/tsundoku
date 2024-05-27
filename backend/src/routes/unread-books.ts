@@ -41,7 +41,7 @@ export const unreadBooksRouter = (knex: Knex) => {
         .orderBy("date");
 
       if (result.length === 0) {
-        res.status(404).send();
+        res.send();
         return;
       }
 
