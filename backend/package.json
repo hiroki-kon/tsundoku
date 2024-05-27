@@ -8,7 +8,9 @@
     "makeMigrate": "knex migrate:make -x ts",
     "migrate": "node -r dotenv/config ./node_modules/knex/bin/cli.js migrate:latest --knexfile ./db/knexfile.ts",
     "seed": "node -r dotenv/config ./node_modules/knex/bin/cli.js seed:run --knexfile ./db/knexfile.ts",
-    "generateApiType": "rm -rf  ../types/generated/api && openapi2aspida -i ../docs/api-definition.yaml -o ../types/generated/api"
+    "generateApiType": "rm -rf  ../types/genera ted/api && openapi2aspida -i ../docs/api-definition.yaml -o ../types/generated/api",
+    "build": "pnpm install && pnpm run migrate && pnpm run generateApiType",
+    "start": "ts-node -T ./src/index.ts"
   },
   "engines": {
     "npm": "use pnpm",
