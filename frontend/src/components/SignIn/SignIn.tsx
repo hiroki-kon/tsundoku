@@ -1,13 +1,14 @@
-import { TextInput, Button, Box, Anchor } from "@mantine/core";
+import { TextInput, Button, Box, Anchor, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
 import classes from "./SignIn.module.css";
 
 interface Props {
   onSubmit: (values: { email: string; password: string }) => void;
+  invalidPassword: boolean;
 }
 
-export const SignIn = ({ onSubmit }: Props) => {
+export const SignIn = ({ onSubmit, invalidPassword }: Props) => {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -42,6 +43,8 @@ export const SignIn = ({ onSubmit }: Props) => {
           key={form.key("password")}
           {...form.getInputProps("password")}
         />
+
+        {invalidPassword && <Text c="red">パスワード又はメールアドレスが違います</Text>}
 
         <Button type="submit">サインイン</Button>
 
